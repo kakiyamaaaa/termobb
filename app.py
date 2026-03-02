@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-import os
 import random
 
 app = Flask(__name__)
@@ -21,7 +20,8 @@ def verificar_palavra(tentativa):
 @app.route("/")
 def home():
     return render_template("index.html")
-@app.route("/verificar",methods=["POST"])
+
+@app.route("/verificar", methods=["POST"])
 def verificar():
     tentativa = request.json["tentativa"].lower()
     cores = verificar_palavra(tentativa)
@@ -29,6 +29,3 @@ def verificar():
         "cores": cores,
         "ganhou": tentativa == palavra_secreta
     })
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
