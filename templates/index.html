@@ -1,25 +1,26 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Termo bb 💖</title>
-
-<style>
+/* FUNDO FOFO */
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #ffd6e7, #ffeef7);
+    font-family: "Comic Sans MS", "Arial", sans-serif;
+    background: linear-gradient(135deg, #ffe4f1, #fff6fb);
     text-align: center;
     margin: 0;
     padding: 15px;
 }
 
+/* TÍTULO */
 h1 {
-    color: #ff4f81;
-    font-size: 22px;
+    color: #ff6fa5;
+    font-size: 24px;
     margin-bottom: 5px;
+    text-shadow: 0 2px 6px rgba(255, 160, 190, 0.4);
 }
 
+p {
+    margin-top: 0;
+    color: #a85d7b;
+}
+
+/* GRID */
 #grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -28,220 +29,91 @@ h1 {
     margin: 20px auto;
 }
 
+/* CAIXAS FOFINHAS */
 .box {
     aspect-ratio: 1 / 1;
-    border-radius: 12px;
-    background: white;
+    border-radius: 16px;
+    background: #fff;
     font-size: 22px;
     font-weight: bold;
+    color: #ff6fa5;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    border: 2px solid #ffd1e6;
+    box-shadow: 0 4px 10px rgba(255, 170, 200, 0.3);
+    transition: 0.2s;
 }
 
+/* ANIMAÇÃO FOFA */
+.box:active {
+    transform: scale(0.95);
+}
+
+/* TECLADO */
 #keyboard {
-    max-width: 420px;
+    max-width: 500px;
     margin: 15px auto;
 }
 
 .keyboard-row {
     display: flex;
     justify-content: center;
+    margin: 6px 0;
 }
 
+/* TECLAS */
 .key {
     flex: 1;
-    min-width: 32px;
+    min-width: 34px;
     padding: 16px 0;
     margin: 4px;
     border: none;
-    border-radius: 10px;
-    background: #ff8fb1;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ff9fc5, #ff7bb1);
     color: white;
     font-weight: bold;
-    font-size: 18px;
-    touch-action: manipulation;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(255, 150, 190, 0.4);
+    transition: 0.15s;
 }
 
-.enter {
+/* ENTER e DELETE */
+.enter, .delete {
     flex: 2;
-    background: #ff4f81;
+    background: linear-gradient(180deg, #ff7bb1, #ff4f81);
 }
 
-.backspace {
-    flex: 2;
-    background: #ff6f9f;
+/* EFEITO PRESSIONAR */
+.key:active {
+    transform: scale(0.9);
 }
 
-.green { background: #7ed957 !important; color: white; }
-.yellow { background: #ffd966 !important; }
+/* CORES RESULTADO */
+.green {
+    background: linear-gradient(180deg, #8ff7b3, #61d98e) !important;
+    color: white;
+    border: none;
+}
+
+.yellow {
+    background: linear-gradient(180deg, #ffe79a, #ffd45e) !important;
+    border: none;
+}
+
 .gray {
-    background: #ddd !important;
-    color: transparent !important;
-    pointer-events: none;
+    background: #d9d9d9 !important;
+    border: none;
 }
 
-button:active {
-    transform: scale(0.92);
-}
-
+/* RESPONSIVO */
 @media (max-width: 400px) {
     .key {
-        font-size: 16px;
+        font-size: 14px;
         padding: 14px 0;
     }
-}
-</style>
-</head>
 
-<body>
-
-<h1>Termo da minha bbzinha 💕</h1>
-<p>Descubra a palavra</p>
-
-<div id="grid"></div>
-<div id="keyboard"></div>
-
-<script>
-let tentativa = "";
-let linha = 0;
-
-function criarGrid() {
-    let grid = document.getElementById("grid");
-    for (let i = 0; i < 30; i++) {
-        let div = document.createElement("div");
-        div.className = "box";
-        grid.appendChild(div);
+    h1 {
+        font-size: 20px;
     }
 }
-
-function criarTeclado() {
-    let teclado = document.getElementById("keyboard");
-
-    let linhas = [
-        "QWERTYUIOP",
-        "ASDFGHJKL"
-    ];
-
-    linhas.forEach((linhaTexto) => {
-        let divLinha = document.createElement("div");
-        divLinha.className = "keyboard-row";
-
-        linhaTexto.split("").forEach(l => {
-            let btn = document.createElement("button");
-            btn.innerText = l;
-            btn.className = "key";
-            btn.id = "key-" + l.toLowerCase();
-            btn.onclick = () => digitar(l);
-            divLinha.appendChild(btn);
-        });
-
-        teclado.appendChild(divLinha);
-    });
-
-    // Linha final com Backspace + letras + Enter
-    let ultima = document.createElement("div");
-    ultima.className = "keyboard-row";
-
-    let back = document.createElement("button");
-    back.innerText = "⌫";
-    back.className = "key backspace";
-    back.onclick = apagar;
-
-    ultima.appendChild(back);
-
-    "ZXCVBNM".split("").forEach(l => {
-        let btn = document.createElement("button");
-        btn.innerText = l;
-        btn.className = "key";
-        btn.id = "key-" + l.toLowerCase();
-        btn.onclick = () => digitar(l);
-        ultima.appendChild(btn);
-    });
-
-    let enter = document.createElement("button");
-    enter.innerText = "Enter";
-    enter.className = "key enter";
-    enter.onclick = enviar;
-
-    ultima.appendChild(enter);
-    teclado.appendChild(ultima);
-}
-
-function digitar(letra) {
-    if (tentativa.length < 5) {
-        tentativa += letra.toLowerCase();
-        atualizar();
-    }
-}
-
-function apagar() {
-    if (tentativa.length > 0) {
-        tentativa = tentativa.slice(0, -1);
-        atualizar();
-    }
-}
-
-function atualizar() {
-    let boxes = document.querySelectorAll(".box");
-
-    for (let i = 0; i < 5; i++) {
-        boxes[linha*5 + i].innerText = tentativa[i] || "";
-    }
-}
-
-async function enviar() {
-    if (tentativa.length !== 5) return;
-
-    let res = await fetch("/verificar", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({tentativa})
-    });
-
-    let dados = await res.json();
-    let boxes = document.querySelectorAll(".box");
-
-    dados.cores.forEach((c, i) => {
-        boxes[linha*5 + i].classList.add(c);
-    });
-
-    dados.cores.forEach((cor, i) => {
-        let letra = tentativa[i];
-        let tecla = document.getElementById("key-" + letra);
-        if (!tecla) return;
-
-        if (tecla.classList.contains("green")) return;
-
-        if (cor === "green") {
-            tecla.classList.remove("yellow", "gray");
-            tecla.classList.add("green");
-        } else if (cor === "yellow") {
-            if (!tecla.classList.contains("green")) {
-                tecla.classList.remove("gray");
-                tecla.classList.add("yellow");
-            }
-        } else if (cor === "gray") {
-            if (!tecla.classList.contains("green") &&
-                !tecla.classList.contains("yellow")) {
-                tecla.classList.add("gray");
-                tecla.disabled = true;
-            }
-        }
-    });
-
-    if (dados.ganhou) {
-        setTimeout(() => alert("Te amo bb!! Você é perfeita! 💖"), 300);
-    }
-
-    tentativa = "";
-    linha++;
-}
-
-criarGrid();
-criarTeclado();
-</script>
-
-</body>
-</html>
