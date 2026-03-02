@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Termo bb 💖</title>
 
 <style>
@@ -9,27 +10,35 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #ffd6e7, #ffeef7);
     text-align: center;
-    padding: 20px;
+    margin: 0;
+    padding: 15px;
 }
 
 h1 {
     color: #ff4f81;
+    font-size: 22px;
+    margin-bottom: 5px;
 }
 
+p {
+    margin-top: 0;
+}
+
+/* GRID RESPONSIVO */
 #grid {
     display: grid;
-    grid-template-columns: repeat(5, 60px);
-    gap: 10px;
-    justify-content: center;
-    margin: 20px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    max-width: 350px;
+    margin: 20px auto;
 }
 
+/* CAIXAS */
 .box {
-    width: 60px;
-    height: 60px;
+    aspect-ratio: 1 / 1;
     border-radius: 10px;
     background: white;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     display: flex;
     justify-content: center;
@@ -37,20 +46,24 @@ h1 {
     box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
+/* TECLADO */
 #keyboard {
-    margin-top: 20px;
+    max-width: 400px;
+    margin: 10px auto;
 }
 
 .key {
-    padding: 10px;
-    margin: 3px;
+    padding: 12px 8px;
+    margin: 4px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background: #ff8fb1;
     color: white;
     font-weight: bold;
+    font-size: 14px;
 }
 
+/* CORES */
 .green { background: #7ed957 !important; color: white; }
 .yellow { background: #ffd966 !important; }
 .gray { background: #bbb !important; }
@@ -58,16 +71,23 @@ h1 {
 button:active {
     transform: scale(0.95);
 }
+
+/* RESPONSIVO EXTRA */
+@media (max-width: 400px) {
+    .key {
+        font-size: 12px;
+        padding: 10px 6px;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<h1>Termo da minha namorada 💕</h1>
-<p>Descubra a palavra secreta 😘</p>
+<h1>Termo da minha bbzinha 💕</h1>
+<p>Descubra a palavra</p>
 
 <div id="grid"></div>
-
 <div id="keyboard"></div>
 
 <script>
@@ -134,7 +154,7 @@ async function enviar() {
     });
 
     if (dados.ganhou) {
-        setTimeout(() => alert("Você é perfeita 💖"), 300);
+        setTimeout(() => alert("Te amo bb!! Você é perfeita! 💖"), 300);
     }
 
     tentativa = "";
