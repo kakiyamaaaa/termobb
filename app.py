@@ -1,13 +1,24 @@
 from flask import Flask, render_template, request, jsonify
-import random
+import datetime
 
 app = Flask(__name__)
 
-palavras = ["teamo", "beijo", "bubia", "linda", "lilas"]
-palavra_secreta = random.choice(palavras)
+palavras = ["teamo", "beijo", "bubia", "linda", "lilas", "tesao","uniao","sonho","meiga",
+            "cuida","junto","perto","rosas","janta","noite"]
+
+def palavra_do_dia():
+    hoje = datetime.date.today()
+    base = datetime.date(2024, 1, 1)
+
+    dias = (hoje - base).days
+
+    return palavras[dias % len(palavras)]
+
 
 def verificar_palavra(tentativa):
+    palavra_secreta = palavra_do_dia()
     resultado = []
+
     for i, letra in enumerate(tentativa):
         if letra == palavra_secreta[i]:
             resultado.append("green")
@@ -15,16 +26,22 @@ def verificar_palavra(tentativa):
             resultado.append("yellow")
         else:
             resultado.append("gray")
+
     return resultado
+
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
 @app.route("/verificar", methods=["POST"])
 def verificar():
     tentativa = request.json["tentativa"].lower()
+    palavra_secreta = palavra_do_dia()
+
     cores = verificar_palavra(tentativa)
+
     return jsonify({
         "cores": cores,
         "ganhou": tentativa == palavra_secreta

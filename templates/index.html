@@ -20,63 +20,76 @@ h1 {
     margin-bottom: 5px;
 }
 
-p {
-    margin-top: 0;
-}
-
-/* GRID RESPONSIVO */
 #grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    max-width: 350px;
+    gap: 10px;
+    max-width: 360px;
     margin: 20px auto;
 }
 
-/* CAIXAS */
 .box {
     aspect-ratio: 1 / 1;
-    border-radius: 10px;
+    border-radius: 12px;
     background: white;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-/* TECLADO */
 #keyboard {
-    max-width: 400px;
-    margin: 10px auto;
+    max-width: 420px;
+    margin: 15px auto;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
 }
 
 .key {
-    padding: 12px 8px;
+    flex: 1;
+    min-width: 32px;
+    padding: 16px 0;
     margin: 4px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #ff8fb1;
     color: white;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 18px;
+    touch-action: manipulation;
 }
 
-/* CORES */
+.enter {
+    flex: 2;
+    background: #ff4f81;
+}
+
+.backspace {
+    flex: 2;
+    background: #ff6f9f;
+}
+
 .green { background: #7ed957 !important; color: white; }
 .yellow { background: #ffd966 !important; }
-.gray { background: #bbb !important; }
-
-button:active {
-    transform: scale(0.95);
+.gray {
+    background: #ddd !important;
+    color: transparent !important;
+    pointer-events: none;
 }
 
-/* RESPONSIVO EXTRA */
+button:active {
+    transform: scale(0.92);
+}
+
 @media (max-width: 400px) {
     .key {
-        font-size: 12px;
-        padding: 10px 6px;
+        font-size: 16px;
+        padding: 14px 0;
     }
 }
 </style>
@@ -104,22 +117,56 @@ function criarGrid() {
 }
 
 function criarTeclado() {
-    let letras = "QWERTYUIOPASDFGHJKLZXCVBNM";
     let teclado = document.getElementById("keyboard");
 
-    letras.split("").forEach(l => {
+    let linhas = [
+        "QWERTYUIOP",
+        "ASDFGHJKL"
+    ];
+
+    linhas.forEach((linhaTexto) => {
+        let divLinha = document.createElement("div");
+        divLinha.className = "keyboard-row";
+
+        linhaTexto.split("").forEach(l => {
+            let btn = document.createElement("button");
+            btn.innerText = l;
+            btn.className = "key";
+            btn.id = "key-" + l.toLowerCase();
+            btn.onclick = () => digitar(l);
+            divLinha.appendChild(btn);
+        });
+
+        teclado.appendChild(divLinha);
+    });
+
+    // Linha final com Backspace + letras + Enter
+    let ultima = document.createElement("div");
+    ultima.className = "keyboard-row";
+
+    let back = document.createElement("button");
+    back.innerText = "⌫";
+    back.className = "key backspace";
+    back.onclick = apagar;
+
+    ultima.appendChild(back);
+
+    "ZXCVBNM".split("").forEach(l => {
         let btn = document.createElement("button");
         btn.innerText = l;
         btn.className = "key";
+        btn.id = "key-" + l.toLowerCase();
         btn.onclick = () => digitar(l);
-        teclado.appendChild(btn);
+        ultima.appendChild(btn);
     });
 
     let enter = document.createElement("button");
     enter.innerText = "Enter";
-    enter.className = "key";
+    enter.className = "key enter";
     enter.onclick = enviar;
-    teclado.appendChild(enter);
+
+    ultima.appendChild(enter);
+    teclado.appendChild(ultima);
 }
 
 function digitar(letra) {
@@ -129,10 +176,18 @@ function digitar(letra) {
     }
 }
 
+function apagar() {
+    if (tentativa.length > 0) {
+        tentativa = tentativa.slice(0, -1);
+        atualizar();
+    }
+}
+
 function atualizar() {
     let boxes = document.querySelectorAll(".box");
-    for (let i = 0; i < tentativa.length; i++) {
-        boxes[linha*5 + i].innerText = tentativa[i];
+
+    for (let i = 0; i < 5; i++) {
+        boxes[linha*5 + i].innerText = tentativa[i] || "";
     }
 }
 
@@ -146,11 +201,34 @@ async function enviar() {
     });
 
     let dados = await res.json();
-
     let boxes = document.querySelectorAll(".box");
 
     dados.cores.forEach((c, i) => {
         boxes[linha*5 + i].classList.add(c);
+    });
+
+    dados.cores.forEach((cor, i) => {
+        let letra = tentativa[i];
+        let tecla = document.getElementById("key-" + letra);
+        if (!tecla) return;
+
+        if (tecla.classList.contains("green")) return;
+
+        if (cor === "green") {
+            tecla.classList.remove("yellow", "gray");
+            tecla.classList.add("green");
+        } else if (cor === "yellow") {
+            if (!tecla.classList.contains("green")) {
+                tecla.classList.remove("gray");
+                tecla.classList.add("yellow");
+            }
+        } else if (cor === "gray") {
+            if (!tecla.classList.contains("green") &&
+                !tecla.classList.contains("yellow")) {
+                tecla.classList.add("gray");
+                tecla.disabled = true;
+            }
+        }
     });
 
     if (dados.ganhou) {
