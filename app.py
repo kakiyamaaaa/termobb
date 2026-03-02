@@ -6,7 +6,7 @@ import pytz
 app = Flask(__name__)
 
 palavras = ["teamo","beijo","bubia","linda","lilas","tesao","uniao","sonho","meiga",
-            "cuida","junto","perto","rosas","janta","noite","casar","kanye","minho",
+            "cuida","junto","rosas","janta","noite","casar","kanye","minho",
             "matue","lirio","mimos","comer","maniac","slash","miroh","creed"]
 
 def palavra_do_dia():
