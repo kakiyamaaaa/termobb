@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify
-from datetime import datetime, timedelta
+from datetime import datetime
+import pytz
+
 
 app = Flask(__name__)
 
@@ -8,9 +10,8 @@ palavras = ["teamo","beijo","bubia","linda","lilas","tesao","uniao","sonho","mei
             "matue","lirio","mimos","comer","maniac","slash","miroh","creed"]
 
 def palavra_do_dia():
-    # Força horário do Brasil (UTC-3)
-    agora_brasil = datetime.utcnow() - timedelta(hours=3)
-    hoje = agora_brasil.date()
+    fuso = pytz.timezone("America/Sao_Paulo")
+    hoje = datetime.now(fuso).date()
 
     base = datetime(2024, 1, 1).date()
     dias = (hoje - base).days
