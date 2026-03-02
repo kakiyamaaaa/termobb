@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import datetime
+import zoneinfo
 
 app = Flask(__name__)
 
@@ -8,9 +9,10 @@ palavras = ["teamo","beijo","bubia","linda","lilas","tesao","uniao","sonho","mei
             "matue","lirio","mimos","comer","maniac","slash","miroh","creed"]
 
 def palavra_do_dia():
-    hoje = datetime.date.today()
-    base = datetime.date(2024, 1, 1)
+    fuso = zoneinfo.ZoneInfo("America/Sao_Paulo")
+    hoje = datetime.datetime.now(fuso).date()
 
+    base = datetime.date(2024,1,1)
     dias = (hoje - base).days
 
     return palavras[dias % len(palavras)]
