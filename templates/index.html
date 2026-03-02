@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Termo bb 💖</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffd6e7, #ffeef7);
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #ff4f81;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(5, 60px);
+    gap: 10px;
+    justify-content: center;
+    margin: 20px;
+}
+
+.box {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    background: white;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+#keyboard {
+    margin-top: 20px;
+}
+
+.key {
+    padding: 10px;
+    margin: 3px;
+    border: none;
+    border-radius: 6px;
+    background: #ff8fb1;
+    color: white;
+    font-weight: bold;
+}
+
+.green { background: #7ed957 !important; color: white; }
+.yellow { background: #ffd966 !important; }
+.gray { background: #bbb !important; }
+
+button:active {
+    transform: scale(0.95);
+}
+</style>
+</head>
+
+<body>
+
+<h1>Termo da minha namorada 💕</h1>
+<p>Descubra a palavra secreta 😘</p>
+
+<div id="grid"></div>
+
+<div id="keyboard"></div>
+
+<script>
+let tentativa = "";
+let linha = 0;
+
+function criarGrid() {
+    let grid = document.getElementById("grid");
+    for (let i = 0; i < 30; i++) {
+        let div = document.createElement("div");
+        div.className = "box";
+        grid.appendChild(div);
+    }
+}
+
+function criarTeclado() {
+    let letras = "QWERTYUIOPASDFGHJKLZXCVBNM";
+    let teclado = document.getElementById("keyboard");
+
+    letras.split("").forEach(l => {
+        let btn = document.createElement("button");
+        btn.innerText = l;
+        btn.className = "key";
+        btn.onclick = () => digitar(l);
+        teclado.appendChild(btn);
+    });
+
+    let enter = document.createElement("button");
+    enter.innerText = "Enter";
+    enter.className = "key";
+    enter.onclick = enviar;
+    teclado.appendChild(enter);
+}
+
+function digitar(letra) {
+    if (tentativa.length < 5) {
+        tentativa += letra.toLowerCase();
+        atualizar();
+    }
+}
+
+function atualizar() {
+    let boxes = document.querySelectorAll(".box");
+    for (let i = 0; i < tentativa.length; i++) {
+        boxes[linha*5 + i].innerText = tentativa[i];
+    }
+}
+
+async function enviar() {
+    if (tentativa.length !== 5) return;
+
+    let res = await fetch("/verificar", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({tentativa})
+    });
+
+    let dados = await res.json();
+
+    let boxes = document.querySelectorAll(".box");
+
+    dados.cores.forEach((c, i) => {
+        boxes[linha*5 + i].classList.add(c);
+    });
+
+    if (dados.ganhou) {
+        setTimeout(() => alert("Você é perfeita 💖"), 300);
+    }
+
+    tentativa = "";
+    linha++;
+}
+
+criarGrid();
+criarTeclado();
+</script>
+
+</body>
+</html>
